@@ -15,6 +15,28 @@ document.addEventListener("DOMContentLoaded", function () {
     if (addMemberForm) addMemberForm.addEventListener('submit', handleAddMemberSubmit);
 });
 
+// حماية عامة: يمنع الضغط المزدوج على جميع نماذج الموقع
+document.addEventListener('submit', function (e) {
+    // تحديد زر الإرسال داخل النموذج الذي تم الضغط عليه
+    const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"]');
+
+    if (submitBtn) {
+        // إذا كان الزر معطلاً بالفعل، نمنع إرسال النموذج مجدداً
+        if (submitBtn.disabled) {
+            e.preventDefault();
+            return false;
+        }
+
+        // تعطيل الزر فوراً
+        submitBtn.disabled = true;
+
+        // إعادة تفعيل الزر تلقائياً بعد ثانيتين (أو بعد اكتمال الطلب)
+        setTimeout(() => {
+            submitBtn.disabled = false;
+        }, 2000);
+    }
+});
+
 async function checkAuthStatus() {
     try {
         const res = await fetch('/api/check-auth?t=' + new Date().getTime());
